@@ -1,36 +1,74 @@
-class Book
-    def set_title=(title)
-        @title = title
-    end
+class Blog
 
-    def get_title
-        return @title
-    end
+  @@all_blog_posts = []
+  @@num_blog_posts = 0
 
-    def set_author=(author)
-        @author = author
-    end
+  def self.all
+    @@all_blog_posts
+  end
 
-    def get_author
-        return @author
-    end
+  def self.add(thing)
+    @@all_blog_posts << thing
+    @@num_blog_posts += 1
+  end
 
-    def set_publisher=(publisher)
-        @publisher = publisher
+  def self.publish
+    @@all_blog_posts.each do |post|
+      puts "Title:\n #{post.title}"
+      puts "Body:\n #{post.content}"
+      puts "Publish Date:\n #{post.created_at}"
     end
+  end
 
-    def get_publisher
-        return @publisher
-    end
-
-    def about_book
-        return "#{@title} is written by #{@author} and published by #{@publisher}."
-    end
 end
 
-my_book = Book.new
-my_book.set_title = 'Book Title'
-my_book.set_author = 'Book Author'
-my_book.set_publisher = 'Book Publisher'
 
-puts my_book.about_book
+class BlogPost < Blog
+
+  def self.create
+    post = new
+    puts "Name your blog post:"
+    post.title = gets.chomp
+    puts "Your blog post content:"
+    post.content = gets.chomp
+    post.created_at = Time.now
+    post.save
+    puts "Do you want to create another post? [Y/N]"
+    create if gets.chomp.downcase == 'y'
+ #returns if not ‘y’ and stops the rest of the script from running. otherwise, continues to run ‘create’ method.
+  end
+
+  def title
+    @title
+  end
+
+  def title=(title) # a setter method always takes an argument
+    @title = title # don't forget to set the instance variable
+  end
+
+  def created_at
+    @created_at
+  end
+
+  def created_at=(created_at)
+    @created_at = created_at
+  end
+
+  def content
+    @content
+  end
+
+  def content=(content)
+    @content = content
+  end
+
+  def save
+    BlogPost.add(self)
+  end
+
+end
+
+BlogPost.create
+all_blog_posts = BlogPost.all
+puts all_blog_posts.inspect
+BlogPost.publish
